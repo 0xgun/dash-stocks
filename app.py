@@ -1,8 +1,7 @@
 import dash
 from dash import dcc
 from dash import html
-from datetime import date
-
+from datetime import datetime as dt
 
 app = dash.Dash(__name__)
 server = app.server
@@ -11,77 +10,59 @@ app.layout = html.Div(
     [
         html.Div(
             [
+                # Navigation
                 html.P("Welcome to the Stock Dash App!", className="start"),
-                html.Div(
-                    [
-                        # stock code input
-                        html.P("Input the stock code:"),
-                        dcc.Input(
-                            id="input-code",
-                        ),
-                       html.Button("Submit"),
-                        # Date range picker input
-                        html.Div(
-                            [
-                                dcc.DatePickerRange(
-                                    id="date-picker-range",
-                                    start_date_placeholder_text="Start date",
-                                    end_date=date(2022, 3, 16),
-                                )
-                            ]
-                        ),
-                    ]
-                ),
-                html.Div(
-                    [
-                        # Stock price button
-                        html.Button("Stock Price"),
-                        # Indicators button
-                        html.Button("Indicators"),
-                        # Number of days of forecast input
-                        dcc.Input(id="input-box", type="text"),
-                        # Forecast button
-                        html.Button("Forecast"),
-                    ]
-                ),
+                html.Div([
+                    html.P("Input stock code: "),
+                    html.Div([
+                        dcc.Input(id="dropdown_tickers", type="text"),
+                        html.Button("Submit", id='submit'),
+                    ],
+                             className="form")
+                ],
+                         className="input-place"),
+                html.Div([
+                    dcc.DatePickerRange(id='my-date-picker-range',
+                                        min_date_allowed=dt(1995, 8, 5),
+                                        max_date_allowed=dt.now(),
+                                        initial_visible_month=dt.now(),
+                                        end_date=dt.now().date()),
+                ],
+                         className="date"),
+                html.Div([
+                    html.Button(
+                        "Stock Price", className="stock-btn", id="stock"),
+                    html.Button("Indicators",
+                                className="indicators-btn",
+                                id="indicators"),
+                    dcc.Input(id="n_days",
+                              type="text",
+                              placeholder="number of days"),
+                    html.Button(
+                        "Forecast", className="forecast-btn", id="forecast")
+                ],
+                         className="buttons"),
+                # here
             ],
-            className="nav",
-        ),
+            className="nav"),
+
+        # content
         html.Div(
             [
                 html.Div(
-                    [  # Logo
-                        # Company Name
+                    [  # header
+                        html.Img(id="logo"),
+                        html.P(id="ticker")
                     ],
-                    className="header",
-                ),
-                html.Div(  # Description
-                    id="description", className="decription_ticker"
-                ),
-                html.Div(
-                    [
-                        # Stock price plot
-                    ],
-                    id="graphs-content",
-                ),
-                html.Div(
-                    [
-                        # Indicator plot
-                    ],
-                    id="main-content",
-                ),
-                html.Div(
-                    [
-                        # Forecast plot
-                    ],
-                    id="forecast-content",
-                ),
+                    className="header"),
+                html.Div(id="description", className="decription_ticker"),
+                html.Div([], id="graphs-content"),
+                html.Div([], id="main-content"),
+                html.Div([], id="forecast-content")
             ],
-            className="content",
-        ),
-    ]
-)
-
+            className="content"),
+    ],
+    className="container")
 
 if __name__ == "__main__":
     app.run_server(debug=True)
